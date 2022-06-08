@@ -32,9 +32,9 @@ class WebsiteController extends Controller
         return view('registration');
     }
 
-    // submit the registration data through post method.
+    // Submit the Registration Data Through Post Method.
     public function registration_submit(Request $request){
-        // create a token for a specific user.
+        // Create a Token for a Specific User.
         $token = hash('sha256',time());
         
         $user = new User();
@@ -42,13 +42,13 @@ class WebsiteController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->status = "Pending";
-        // give the token variable.
+        // Give the Token Variable.
         $user->token = $token;
         $user->role=2;
-        // store the information in the database.
+        // Store the Information in the Database.
         $user->save();
 
-        // Send this information to the MailTrap. 
+        // Send This Information to the MailTrap. 
         $verification_link = url('registration/verify/'.$token.'/'.$request->email);
         $subject = "Registration Confirmation";
         $message = 'Please click on the link below: <br> <a href="'.$verification_link.'">Click Here</a>';
@@ -56,16 +56,16 @@ class WebsiteController extends Controller
         print("Email is sent to the user");
     }
 
-    // we need to verify the user in the mailtrap.
+    // We Need to Verify the User in the MailTrap.
     public function registration_verify($token, $email)
     {
-        // Firstly,we need to catch the user information from database.
+        // Firstly,We Need to Catch the User Information From Database.
         $user = User::where('token',$token)->where('email',$email)->first();
-        // if the user is not found then redirected to the login page.
+        // If the User is not Found then Redirected to the Login Page.
         if (!$user) {
             return redirect()->route('login');
         }
-        // then update the information of that specific user.
+        // Then Update the Information of That Specific User.
         $user->status = "Active";
         $user->token = "";
         $user->update();
@@ -74,13 +74,13 @@ class WebsiteController extends Controller
     }
 
     public function login_submit(Request $request){
-        // get the credentials
+        // Get the Credentials
         $credentials=[
             'email'=>$request->email,
             'password'=>$request->password,
             'status'=>'Active'
         ];
-        // use the default authentication system for login
+        // Use the Default Authentication System for Login
         if (Auth::attempt($credentials)) {
             if (auth()->user()->role==1) {
                 return redirect()->route('dashboard_admin');  
@@ -93,7 +93,7 @@ class WebsiteController extends Controller
     }
 
     public function logout(){
-        // use the default logout system
+        // Use the Default Logout System
         Auth::guard('web')->logout();
         return redirect()->route('login');
     }
@@ -103,28 +103,28 @@ class WebsiteController extends Controller
     }
 
     public function forget_password_submit(Request $request){
-        // create a token.
+        // Create a Token.
         $token = hash('sha256',time());
-        // catch the user information.
+        // Catch the User Information.
         $user = User::where('email',$request->email)->first();
         if (!$user) {
             dd("user not found");
         }
         $user->token = $token;
         $user->update();
-        // create a password reset link.
+        // Create a Password Reset Link.
         $password_reset_link = url("reset_password/".$token.'/'.$request->email);
         $subject = "Reset Password";
         $message = 'Please click on the link below: <br> <a href="'.$password_reset_link.'">Click Here</a>';
-        // mail to that specific user.
+        // Mail to That Specific User.
         Mail::to($request->email)->send(new WebsiteMail($subject,$message));
         print "Check your email";
     }
 
-    // show reset password page
+    // Show Reset Password Page
     public function reset_password($token, $email)
     {
-        // catch the user information.
+        // Catch the User Information.
         $user = User::where('email',$email)->where('token',$token)->first();
         return view('reset_password',compact('token','email'));
     }
@@ -132,7 +132,7 @@ class WebsiteController extends Controller
     public function reset_password_submit(Request $request)
     {
         $user = User::where('token',$request->token)->where('email',$request->email)->first();
-        // we make the token null of that specific user.
+        // We Make the Token Null of That Specific User.
         $user->token = "";
         $user->password = Hash::make($request->password);
         $user->update();
