@@ -12,7 +12,7 @@
 
     <h3>Login</h3>
     
-    <form action="{{ route('login') }}" method="post">
+    <form action="{{ route('login_submit') }}" method="post">@csrf
         <div>
             <label for="email">Email Address</label>
             <input type="text" name="email">

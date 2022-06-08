@@ -12,7 +12,7 @@
 
     <h3>Dashboard Page</h3>
     <p>
-        Welcome to dashboard.
+        hey {{ auth()->user()->name }} Welcome to dashboard.
     </p>
 </body>
 </html>
