@@ -10,7 +10,7 @@
     
     @include('navbar')
 
-    <h3>Dashboard Page</h3>
+    <h3>Dashboard Page - Admin</h3>
     <p>
         hey {{ auth()->user()->name }} Welcome to dashboard.
     </p>

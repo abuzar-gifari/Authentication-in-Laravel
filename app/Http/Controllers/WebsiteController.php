@@ -16,8 +16,12 @@ class WebsiteController extends Controller
         return view('home');
     }
 
-    public function dashboard(){
-        return view('dashboard');
+    public function dashboard_user(){
+        return view('dashboard_user');
+    }
+
+    public function dashboard_admin(){
+        return view('dashboard_admin');
     }
 
     public function login(){
@@ -40,7 +44,7 @@ class WebsiteController extends Controller
         $user->status = "Pending";
         // give the token variable.
         $user->token = $token;
-
+        $user->role=2;
         // store the information in the database.
         $user->save();
 
@@ -78,7 +82,11 @@ class WebsiteController extends Controller
         ];
         // use the default authentication system for login
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard');
+            if (auth()->user()->role==1) {
+                return redirect()->route('dashboard_admin');  
+            }else {
+                return redirect()->route('dashboard_user');
+            }
         }else {
             return redirect()->route('login');
         }
@@ -131,4 +139,8 @@ class WebsiteController extends Controller
         print "Password is reset.";
     }
 
+    public function settings()
+    {
+        return view('settings');
+    }
 }
